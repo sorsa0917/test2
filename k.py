@@ -12,7 +12,7 @@ pygame.display.set_caption(title)
 clock=pygame.time.Clock()
 black=(0,0,0)
 white=(255,255,255)
-brown=(85,56,48)
+
 
 def tup_r(tup):
     temp_list=[]
