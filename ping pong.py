@@ -1,4 +1,5 @@
 import pygame #파이 게임 모듈 임포트
+import random
 
 pygame.init() #파이 게임 초기화
 SCREEN_WIDTH = 800
@@ -23,8 +24,9 @@ P2_WIN = 2
 game_over = 0
 
 ball = pygame.Rect(SCREEN_WIDTH // 2 - 16 // 2, SCREEN_HEIGHT // 2 - 16 // 2, 16, 16)
-ball_dx = 5
-ball_dy = -5
+ball_speed = 5
+ball_dx = ball_speed
+ball_dy = -ball_speed
 
 p1_paddle = pygame.Rect(0, SCREEN_HEIGHT // 2 - 80 // 2, 16, 80)
 
@@ -73,14 +75,16 @@ while exit: #게임 루프
         p2_score += 1
         ball.centerx = SCREEN_WIDTH // 2
         ball.centery = SCREEN_HEIGHT // 2
-        ball_dx = 5
-        ball_dy = -5
+        ball_speed = 5
+        ball_dx = ball_speed
+        ball_dy = -ball_speed
     elif ball.right > SCREEN_WIDTH:
         p1_score += 1
         ball.centerx = SCREEN_WIDTH // 2
         ball.centery = SCREEN_HEIGHT // 2
+        ball_speed = 5
         ball_dx = 5
-        ball_dy = -5
+        ball_dy = -5    
     if ball.top < 0 or ball.bottom > SCREEN_HEIGHT:
         ball_dy *= -1
 
@@ -89,13 +93,24 @@ while exit: #게임 루프
     elif p2_paddle.bottom > SCREEN_HEIGHT:
         p2_paddle.bottom = SCREEN_HEIGHT
     if ball.colliderect(p1_paddle):
-        ball_dx = ball_dx * -1
+        ball_dx = abs(ball_dx)  # 패들에 닿으면 x 방향을 반대로 변경
         if ball.centery <= p1_paddle.top or ball.centery > p1_paddle.bottom:
-            ball_dy = ball_dy * -1
+            ball_dy *=2
+            ball_dx *=2
+            ball_speed *=2  # 공의 이동 속도를 1.3배로 증가
     if ball.colliderect(p2_paddle):
-        ball_dx = ball_dx * -1
+        ball_dx = -abs(ball_dx)  # 패들에 닿으면 x 방향을 반대로 변경
         if ball.centery <= p2_paddle.top or ball.centery > p2_paddle.bottom:
-            ball_dy = ball_dy * -1
+            ball_dy *=2
+            ball_dx *=2
+            ball_speed *=2  # 공의 이동 속도를 1.3배로 증가
+    if ball.colliderect(p1_paddle):
+        ball_dx = ball_dx * 1.3  # 패들에 닿을 때마다 x축 속도 증가
+        ball_dy = ball_dy * 1.3  # 패들에 닿을 때마다 y축 속도 증가
+    if ball.colliderect(p2_paddle):
+        ball_dx = ball_dx * 1.3  # 패들에 닿을 때마다 x축 속도 증가
+        ball_dy = ball_dy * 1.3  # 패들에 닿을 때마다 y축 속도 증가
+
 
 
     #화면 그리기
@@ -125,4 +140,4 @@ while exit: #게임 루프
     clock.tick(30) #30 FPS (초당 프레임 수) 를 위한 딜레이 추가, 딜레이 시간이 아닌 목표로 하는 FPS 값
     pygame.display.flip()
 
-pygame.quit() 
+pygame.quit()
